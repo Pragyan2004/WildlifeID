@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block title %}WildlifeID | Log History{% endblock %}
+
+{% block content %}
+<div class="row mb-5">
+    <div class="col-12 d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="display-5 fw-bold mb-2">Identification Vault</h1>
+            <p class="text-muted">Archive of historical field captures and intelligence reports.</p>
+        </div>
+        <div class="btn-group border shadow-sm rounded-3 overflow-hidden">
+            <button class="btn btn-light" id="prevPage" onclick="changePage(-1)" aria-label="Previous page"><i
+                    class="fas fa-chevron-left"></i></button>
+            <div class="px-4 d-flex align-items-center bg-white border-start border-end">
+                <span class="small fw-bold text-dark" id="pageInfo">Page 1 of 1</span>
+            </div>
+            <button class="btn btn-light" id="nextPage" onclick="changePage(1)" aria-label="Next page"><i
+                    class="fas fa-chevron-right"></i></button>
+        </div>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm p-4 mb-5">
+    <div class="row g-3">
+        <div class="col-md-6">
+            <div class="input-group">
+                <span class="input-group-text bg-transparent border-end-0"><i
+                        class="fas fa-search text-muted"></i></span>
+                <input type="text" class="form-control border-start-0 ps-0" id="searchInput"
+                    placeholder="Search by species or ID..." onkeyup="handleFilter()">
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="d-flex gap-2 overflow-auto pb-2" id="speciesFilters">
+                <button class="btn btn-sm btn-outline-primary rounded-pill active"
+                    onclick="filterBySpecies('all')">All</button>
+                <!-- JS will inject species buttons here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="history-grid" class="row g-4">
+    <!-- Items will be injected here by JS -->
+</div>
+
+<div class="d-flex justify-content-center mt-5" id="pagination-container">
+    <!-- Pagination buttons here -->
+</div>
+
+<!-- Details Modal -->
+<div class="modal fade" id="detailsModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div id="modal-content-area"></div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let allPredictions = [];
+    let filteredPredictions = [];
+    let currentPage = 1;
+    const itemsPerPage = 12;
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadHistory();
+    });
+
+    async function loadHistory() {
+        try {
+            const response = await fetch('/api/history');
+            const data = await response.json();
+            if (data.success) {
+                allPredictions = data.history.reverse();
+                filteredPredictions = [...allPredictions];
+                initFilters();
+                renderGrid();
+            }
+        } catch (error) {
+            console.error('Failed to load history:', error);
+        }
+    }
+
+    function initFilters() {
+        const species = [...new Set(allPredictions.map(p => p.prediction))].slice(0, 8);
+        const container = document.getElementById('speciesFilters');
+        species.forEach(s => {
+            const btn = document.createElement('button');
+            btn.className = 'btn btn-sm btn-outline-secondary rounded-pill whitespace-nowrap';
+            btn.textContent = s;
+            btn.onclick = () => filterBySpecies(s);
+            container.appendChild(btn);
+        });
+    }
+
+    function filterBySpecies(species) {
+        document.querySelectorAll('#speciesFilters button').forEach(b => b.classList.remove('active', 'btn-primary'));
+        event.target.classList.add('active', 'btn-primary');
+
+        if (species === 'all') {
+            filteredPredictions = [...allPredictions];
+        } else {
+            filteredPredictions = allPredictions.filter(p => p.prediction === species);
+        }
+        currentPage = 1;
+        renderGrid();
+    }
+
+    function handleFilter() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        filteredPredictions = allPredictions.filter(p =>
+            p.prediction.toLowerCase().includes(query) ||
+            p.id.toLowerCase().includes(query)
+        );
+        currentPage = 1;
+        renderGrid();
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('history-grid');
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const paginated = filteredPredictions.slice(start, end);
+
+        if (paginated.length === 0) {
+            grid.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-search-minus display-1 text-muted mb-3"></i>
+                    <h4>No results found</h4>
+                    <p class="text-muted">Try adjusting your search or filters</p>
+                </div>
+            `;
+            return;
+        }
+
+        grid.innerHTML = paginated.map(p => `
+            <div class="col-lg-3 col-md-6 animate__animated animate__fadeIn">
+                <div class="card h-100 border shadow-sm border-light">
+                    <div class="card-body p-4" onclick="showDetails('${p.id}')">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span class="text-accent fw-bold small text-uppercase pb-1 border-bottom border-accent border-2">
+                                ${p.prediction}
+                            </span>
+                            <span class="text-muted small">
+                                ${(p.confidence * 100).toFixed(0)}%
+                            </span>
+                        </div>
+                        <p class="text-muted mb-3" style="font-size: 0.8rem;">${p.timestamp}</p>
+                        <div class="progress" style="height: 4px; background-color: #eee;">
+                            <div class="progress-bar bg-accent" style="width: ${p.confidence * 100}%"></div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 text-end pb-3">
+                        <button class="btn btn-sm text-danger border-0 opacity-75" onclick="deletePrediction('${p.id}')" title="Delete record">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+
+        renderPagination();
+    }
+
+    async function deletePrediction(id) {
+        if (!confirm('Permanently delete this record?')) return;
+
+        try {
+            const response = await fetch(`/api/history/delete/${id}`, { method: 'DELETE' });
+            const data = await response.json();
+            if (data.success) {
+                allPredictions = allPredictions.filter(p => p.id !== id);
+                filteredPredictions = filteredPredictions.filter(p => p.id !== id);
+                renderGrid();
+            } else {
+                alert('Error deleting: ' + data.error);
+            }
+        } catch (error) {
+            console.error('Delete failed:', error);
+        }
+    }
+
+    function renderPagination() {
+        const totalPages = Math.ceil(filteredPredictions.length / itemsPerPage);
+        const container = document.getElementById('pagination-container');
+
+        if (totalPages <= 1) {
+            container.innerHTML = '';
+            return;
+        }
+
+        let html = '<ul class="pagination pagination-sm">';
+        for (let i = 1; i <= totalPages; i++) {
+            html += `
+                <li class="page-item ${i === currentPage ? 'active' : ''}">
+                    <button class="page-link" onclick="goToPage(${i})">${i}</button>
+                </li>
+            `;
+        }
+        html += '</ul>';
+        container.innerHTML = html;
+    }
+
+    function goToPage(p) {
+        currentPage = p;
+        renderGrid();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function showDetails(id) {
+        const p = allPredictions.find(item => item.id === id);
+        if (!p) return;
+
+        const modalArea = document.getElementById('modal-content-area');
+        modalArea.innerHTML = `
+            <div class="modal-header border-0 pb-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-5">
+                <div class="text-center mb-4">
+                    <div class="bg-primary bg-opacity-10 d-inline-block p-4 rounded-circle mb-3">
+                        <i class="fas fa-paw text-primary display-4"></i>
+                    </div>
+                    <h2 class="fw-bold">${p.prediction}</h2>
+                    <p class="text-muted">Identification ID: ${p.id.slice(0, 12)}...</p>
+                </div>
+                
+                <div class="card bg-light border-0 p-4 mb-4">
+                    <div class="row text-center">
+                        <div class="col-6 border-end">
+                            <h4 class="fw-bold mb-0">${(p.confidence * 100).toFixed(2)}%</h4>
+                            <small class="text-muted">Confidence</small>
+                        </div>
+                        <div class="col-6">
+                            <h4 class="fw-bold mb-0">${p.timestamp.split(' ')[0]}</h4>
+                            <small class="text-muted">Discovery Date</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="list-group list-group-flush small">
+                    <div class="list-group-item d-flex justify-content-between px-0">
+                        <span class="text-muted">Source Image</span>
+                        <span class="fw-bold">${p.filename}</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between px-0">
+                        <span class="text-muted">Model Engine</span>
+                        <span class="fw-bold">EfficientNetV2-L</span>
+                    </div>
+                    <div class="list-group-item d-flex justify-content-between px-0">
+                        <span class="text-muted">Processing Time</span>
+                        <span class="fw-bold">0.38s</span>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary w-100 py-3 rounded-3 mt-4" data-bs-dismiss="modal">
+                    Close Discovery
+                </button>
+            </div>
+        `;
+        const modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+        modal.show();
+    }
+
+    function exportData(format) {
+        const data = filteredPredictions.map(p => ({
+            id: p.id,
+            species: p.prediction,
+            confidence: p.confidence,
+            date: p.timestamp,
+            file: p.filename
+        }));
+
+        if (format === 'json') {
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            saveFile(blob, 'wildlife_logs.json');
+        } else {
+            const csv = 'ID,Species,Confidence,Date,File\n' +
+                data.map(d => `"${d.id}","${d.species}",${d.confidence},"${d.date}","${d.file}"`).join('\n');
+            const blob = new Blob([csv], { type: 'text/csv' });
+            saveFile(blob, 'wildlife_logs.csv');
+        }
+    }
+
+    function saveFile(blob, name) {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = name; a.click();
+    }
+</script>
+<style>
+    .hover-lift {
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer;
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    }
+
+    .whitespace-nowrap {
+        white-space: nowrap;
+    }
+</style>
+{% endblock %}

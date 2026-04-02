@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block title %}WildlifeID | Sign In{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-75 py-5">
+    <div class="col-md-5">
+        <div class="card border shadow-sm p-5 bg-white">
+            <div class="text-center mb-5">
+                <i class="fas fa-paw text-accent display-4 mb-3"></i>
+                <h1 class="fw-bold text-dark fs-2">Welcome Back</h1>
+                <p class="text-muted">Sign in to access your identification vault.</p>
+            </div>
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label small text-muted text-uppercase fw-bold">Email Address</label>
+                    <input type="email" name="email" class="form-control bg-light border-0 py-3"
+                        placeholder="name@organization.org" required>
+                </div>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between">
+                        <label class="form-label small text-muted text-uppercase fw-bold">Password</label>
+                        <a href="#" class="small text-accent text-decoration-none">Forgot?</a>
+                    </div>
+                    <input type="password" name="password" class="form-control bg-light border-0 py-3"
+                        placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-3 fw-bold mb-4">Sign In</button>
+            </form>
+
+            <div class="text-center">
+                <p class="text-muted small mb-0">Don't have an account? <a href="/register"
+                        class="text-accent fw-bold text-decoration-none">Create one</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

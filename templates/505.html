@@ -1,0 +1,364 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Server Error{% endblock %}
+
+{% block extra_css %}
+<style>
+    .error-container {
+        min-height: 70vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 40px 20px;
+    }
+    
+    .error-code {
+        font-size: 180px;
+        font-weight: 900;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        line-height: 1;
+        margin-bottom: 20px;
+        animation: pulse 2s ease-in-out infinite;
+    }
+    
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+    
+    .error-title {
+        font-size: 36px;
+        font-weight: 700;
+        color: #333;
+        margin-bottom: 20px;
+    }
+    
+    .error-message {
+        font-size: 18px;
+        color: #666;
+        max-width: 600px;
+        margin: 0 auto 30px;
+    }
+    
+    .error-illustration {
+        margin: 30px auto;
+        width: 300px;
+        height: 200px;
+        position: relative;
+    }
+    
+    .server-icon {
+        font-size: 100px;
+        color: #667eea;
+        animation: spin 4s linear infinite;
+    }
+    
+    .warning-icon {
+        position: absolute;
+        top: 0;
+        right: 60px;
+        font-size: 40px;
+        color: #f5576c;
+        animation: bounce 1s ease-in-out infinite;
+    }
+    
+    @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+    
+    @keyframes bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-10px); }
+    }
+    
+    .progress-steps {
+        display: flex;
+        justify-content: center;
+        gap: 30px;
+        margin: 40px 0;
+    }
+    
+    .step {
+        text-align: center;
+    }
+    
+    .step-icon {
+        width: 50px;
+        height: 50px;
+        background: #f0f0f0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-size: 20px;
+    }
+    
+    .step.active .step-icon {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+    
+    .step.completed .step-icon {
+        background: #10b981;
+        color: white;
+    }
+    
+    .step.failed .step-icon {
+        background: #f5576c;
+        color: white;
+    }
+    
+    .action-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-top: 30px;
+    }
+    
+    .btn-retry {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 40px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+        border: none;
+        cursor: pointer;
+    }
+    
+    .btn-retry:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        color: white;
+    }
+    
+    .btn-home {
+        background: white;
+        color: #667eea;
+        padding: 15px 40px;
+        border-radius: 30px;
+        font-size: 18px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+        border: 2px solid #667eea;
+    }
+    
+    .btn-home:hover {
+        background: #f8f9fa;
+        transform: scale(1.05);
+        color: #764ba2;
+    }
+    
+    .error-details {
+        background: #1e1e1e;
+        color: #d4d4d4;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: left;
+        font-family: 'Courier New', monospace;
+        margin: 30px auto;
+        max-width: 600px;
+        display: none;
+    }
+    
+    .error-details.show {
+        display: block;
+    }
+    
+    .toggle-details {
+        color: #667eea;
+        cursor: pointer;
+        text-decoration: underline;
+        margin-top: 20px;
+        display: inline-block;
+    }
+    
+    .error-timestamp {
+        color: #6a9955;
+        margin-bottom: 10px;
+    }
+    
+    .support-info {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 40px;
+    }
+    
+    .status-codes {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 20px;
+    }
+    
+    .status-code {
+        padding: 5px 15px;
+        border-radius: 20px;
+        background: #e0e0e0;
+        color: #666;
+        text-decoration: none;
+        font-size: 14px;
+    }
+    
+    .status-code:hover {
+        background: #667eea;
+        color: white;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="error-container animate__animated animate__fadeIn">
+        <div class="row">
+            <div class="col-12">
+                <div class="error-illustration">
+                    <i class="fas fa-server server-icon"></i>
+                    <i class="fas fa-exclamation-triangle warning-icon"></i>
+                </div>
+                
+                <div class="error-code">500</div>
+                <h1 class="error-title">Internal Server Error</h1>
+                <p class="error-message">
+                    Something went wrong on our end. Our team of digital wildlife trackers 
+                    has been notified and is working to fix the issue.
+                </p>
+                
+                <!-- Progress Steps -->
+                <div class="progress-steps">
+                    <div class="step completed">
+                        <div class="step-icon"><i class="fas fa-check"></i></div>
+                        <small>Request Received</small>
+                    </div>
+                    <div class="step completed">
+                        <div class="step-icon"><i class="fas fa-check"></i></div>
+                        <small>Processing</small>
+                    </div>
+                    <div class="step failed">
+                        <div class="step-icon"><i class="fas fa-times"></i></div>
+                        <small>Server Error</small>
+                    </div>
+                    <div class="step">
+                        <div class="step-icon"><i class="fas fa-clock"></i></div>
+                        <small>Retry</small>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button onclick="retryRequest()" class="btn-retry">
+                        <i class="fas fa-redo"></i> Try Again
+                    </button>
+                    <a href="/" class="btn-home">
+                        <i class="fas fa-home"></i> Go Home
+                    </a>
+                </div>
+                
+                <!-- Toggle Error Details -->
+                <a onclick="toggleDetails()" class="toggle-details">
+                    <i class="fas fa-code"></i> Show technical details
+                </a>
+                
+                <!-- Error Details -->
+                <div class="error-details" id="errorDetails">
+                    <div class="error-timestamp">
+                        <i class="far fa-clock"></i> {{ now().strftime('%Y-%m-%d %H:%M:%S') }}
+                    </div>
+                    <div class="error-message-detail">
+                        <span style="color: #569cd6;">TypeError</span>: Cannot read property 'predict' of undefined<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;at app.py line 142<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;in prediction handler<br>
+                        <span style="color: #ce9178;">Request ID</span>: 7a8b3c4d-9e1f-4a3b-8c7d-2e5f9a1b3c7d
+                    </div>
+                </div>
+                
+                <!-- Support Information -->
+                <div class="support-info">
+                    <h5><i class="fas fa-life-ring"></i> Need immediate help?</h5>
+                    <p>Our support team is ready to assist you:</p>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <a href="/contact" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-envelope"></i> Contact Support
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="#" class="btn btn-outline-primary w-100" onclick="startLiveChat()">
+                                <i class="fas fa-comment"></i> Live Chat
+                            </a>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <a href="mailto:support@wildlifeid.com" class="btn btn-outline-primary w-100">
+                                <i class="fas fa-envelope"></i> Email Us
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <div class="status-codes">
+                        <a href="/" class="status-code">200 OK</a>
+                        <a href="/404" class="status-code">404 Not Found</a>
+                        <a href="/500" class="status-code">500 Error</a>
+                        <a href="/api/health" class="status-code">503 Maintenance</a>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <p class="text-muted small">
+                        <i class="fas fa-paw"></i>
+                        Error tracking ID: <code>7a8b3c4d-9e1f-4a3b-8c7d-2e5f9a1b3c7d</code>
+                        <i class="fas fa-paw"></i>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function retryRequest() {
+        const btn = document.querySelector('.btn-retry');
+        const originalText = btn.innerHTML;
+        
+        // Show loading state
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Retrying...';
+        btn.disabled = true;
+        
+        // Simulate retry
+        setTimeout(() => {
+            location.reload();
+        }, 2000);
+    }
+    
+    function toggleDetails() {
+        const details = document.getElementById('errorDetails');
+        details.classList.toggle('show');
+        
+        const link = document.querySelector('.toggle-details');
+        if (details.classList.contains('show')) {
+            link.innerHTML = '<i class="fas fa-code"></i> Hide technical details';
+        } else {
+            link.innerHTML = '<i class="fas fa-code"></i> Show technical details';
+        }
+    }
+    
+    function startLiveChat() {
+        alert('Live chat coming soon! Please use the contact form for now.');
+    }
+    
+    // Auto-retry after 30 seconds
+    setTimeout(() => {
+        if (confirm('Still having trouble? Would you like to retry?')) {
+            location.reload();
+        }
+    }, 30000);
+</script>
+{% endblock %}

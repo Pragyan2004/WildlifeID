@@ -1,0 +1,142 @@
+<!-- cspell:ignore Bengaluru Namaste -->
+{% extends "base.html" %}
+
+{% block title %}WildlifeID | Connect With Us{% endblock %}
+
+{% block content %}
+<div class="row min-vh-75 align-items-center py-5 mb-5">
+    <div class="col-lg-5 pe-lg-5">
+        <h1 class="display-4 fw-bold mb-4" style="letter-spacing: -1px;">Contact Us.</h1>
+        <p class="lead text-muted mb-5">Connect with our team for research partnerships or platform support.</p>
+
+        <div class="d-flex align-items-center mb-4 pb-3 border-bottom border-light">
+            <div class="me-4">
+                <i class="fas fa-paper-plane text-accent fs-4"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-0">Email Correspondence</h6>
+                <p class="text-muted mb-0">hello@wildlifeid.in</p>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center mb-4 pb-3 border-bottom border-light">
+            <div class="me-4">
+                <i class="fas fa-map-marker-alt text-accent fs-4"></i>
+            </div>
+            <div>
+                <h6 class="fw-bold mb-0">Innovation Hub (India)</h6>
+                <p class="text-muted mb-0">Sector 4, HSR Layout, Bengaluru, 560102</p>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <div class="d-flex gap-4">
+                <a href="#" class="text-muted text-decoration-none small fw-bold text-uppercase"><i
+                        class="fab fa-twitter me-1"></i> Twitter</a>
+                <a href="https://www.linkedin.com/in/pragyan-kumar-a95a6722b/"
+                    class="text-muted text-decoration-none small fw-bold text-uppercase" target="_blank"><i
+                        class="fab fa-linkedin-in me-1"></i> LinkedIn</a>
+                <a href="https://github.com/Pragyan2004"
+                    class="text-muted text-decoration-none small fw-bold text-uppercase" target="_blank"><i
+                        class="fab fa-github me-1"></i> GitHub</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-6 offset-lg-1">
+        <div id="contactFormContainer" class="card border shadow-sm p-4 bg-white">
+            <h5 class="fw-bold mb-4">Inquiry Form</h5>
+            <form id="contactForm" onsubmit="handleSubmit(event)">
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label small text-muted">Full Name</label>
+                        <input type="text" class="form-control bg-light border-0" placeholder="e.g. Alex Rivers"
+                            required>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label small text-muted">Email Address</label>
+                        <input type="email" class="form-control bg-light border-0" placeholder="alex@research.org"
+                            required>
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small text-muted">Organization</label>
+                        <input type="text" class="form-control bg-light border-0" placeholder="University or NGO">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label small text-muted">Message</label>
+                        <textarea class="form-control bg-light border-0" rows="5" placeholder="How can we collaborate?"
+                            required></textarea>
+                    </div>
+                    <div class="col-12 mt-4">
+                        <button type="submit" class="btn btn-primary w-100 py-3">Send Message</button>
+                    </div>
+                </div>
+            </form>
+
+            <div id="successMessage" class="text-center d-none py-4">
+                <div class="bg-success bg-opacity-10 p-4 rounded-circle d-inline-block mb-3">
+                    <i class="fas fa-check text-success display-4"></i>
+                </div>
+                <h3>Namaste!</h3>
+                <p class="text-muted">Message received. Our team will respond within 24 hours.</p>
+                <button class="btn btn-outline-secondary mt-3" onclick="resetForm()">Send Another</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row py-5 mb-5">
+    <div class="col-12">
+        <div class="ratio ratio-21x9 rounded-3 overflow-hidden border border-light shadow-sm">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15555.27948332158!2d77.625340!3d12.91211!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bae148d39000001%3A0x6b4a3a699c2227!2sHSR%20Layout%2C%20Bengaluru%2C%20Karnataka!5e0!3m2!1sen!2sin!4v1640000000000!5m2!1sen!2sin"
+                style="border:0;" allowfullscreen="" loading="lazy"
+                title="Google Maps showing office location"></iframe>
+        </div>
+    </div>
+</div>
+
+<style>
+    .blur-card {
+        backdrop-filter: blur(10px);
+    }
+
+    .bg-gradient-brand {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .bg-gradient-brand:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+</style>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function handleSubmit(e) {
+        e.preventDefault();
+        const form = document.getElementById('contactForm');
+        const success = document.getElementById('successMessage');
+
+        form.classList.add('animate__animated', 'animate__fadeOut');
+        setTimeout(() => {
+            form.classList.add('d-none');
+            success.classList.remove('d-none');
+            success.classList.add('animate__animated', 'animate__fadeIn');
+        }, 500);
+    }
+
+    function resetForm() {
+        const form = document.getElementById('contactForm');
+        const success = document.getElementById('successMessage');
+
+        success.classList.add('d-none');
+        form.classList.remove('d-none', 'animate__fadeOut');
+        form.reset();
+        form.classList.add('animate__fadeIn');
+    }
+</script>
+{% endblock %}

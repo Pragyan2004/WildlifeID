@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}WildlifeID | Our Mission{% endblock %}
+
+{% block content %}
+<div class="row min-vh-50 align-items-center py-5 mb-5 border-bottom">
+    <div class="col-lg-6">
+        <span class="text-accent small fw-bold text-uppercase ls-wide">Our Mission</span>
+        <h1 class="display-4 fw-bold mb-4 mt-2">Intelligence for <br>Conservation.</h1>
+        <p class="lead text-muted mb-5">WildlifeID bridges the gap between traditional field biology and modern neural
+            networks, providing a non-invasive way to track and identify species.</p>
+    </div>
+    <div class="col-lg-6">
+        <div class="card border shadow-sm overflow-hidden">
+            <img src="https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&q=80&w=800"
+                class="card-img-top grayscale" alt="Conservation">
+        </div>
+    </div>
+</div>
+
+<div class="row g-5 py-5 mb-5">
+    <div class="col-md-4">
+        <h5 class="fw-bold mb-3">01. Precision Tech</h5>
+        <p class="text-muted small">Utilizing the EfficientNetV2 architecture fine-tuned on a global database of
+            multi-terrain animal footprints.</p>
+    </div>
+    <div class="col-md-4">
+        <h5 class="fw-bold mb-3">02. Ethical AI</h5>
+        <p class="text-muted small">We prioritize data sovereignty for researchers and ensure all identification models
+            are built on ethical datasets.</p>
+    </div>
+    <div class="col-md-4">
+        <h5 class="fw-bold mb-3">03. Scalability</h5>
+        <p class="text-muted small">Designed to handle massive telemetry data, enabling real-time migration tracking
+            across continents.</p>
+    </div>
+</div>
+
+<div class="row py-5 border-top align-items-center">
+    <div class="col-lg-8">
+        <h2 class="fw-bold mb-2">Ready to contribute?</h2>
+        <p class="text-muted mb-0">Join our network of researchers and conservationists worldwide.</p>
+    </div>
+    <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+        <a href="/contact" class="btn btn-primary px-5 py-3">Get in Touch</a>
+    </div>
+</div>
+
+<style>
+    .grayscale {
+        filter: grayscale(100%);
+        transition: filter 0.5s ease;
+    }
+
+    .grayscale:hover {
+        filter: grayscale(0%);
+    }
+</style>
+{% endblock %}

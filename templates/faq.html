@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}WildlifeID | Common Questions{% endblock %}
+
+{% block content %}
+<div class="row min-vh-25 align-items-center py-5 mb-5 border-bottom">
+    <div class="col-12">
+        <h1 class="display-4 fw-bold mb-3">Service FAQ.</h1>
+        <p class="lead text-muted">A technical guide to the WildlifeID platform and methodology.</p>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-0"><i class="fas fa-search text-muted"></i></span>
+                    <input type="text" class="form-control bg-light border-0 py-2" id="faqSearch"
+                        placeholder="Search keywords..." onkeyup="handleSearch()">
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-lg-12">
+        <div class="accordion accordion-flush" id="faqAccordion">
+            <!-- Usage -->
+            <div class="faq-item border-bottom py-3" data-category="usage">
+                <button class="accordion-button collapsed py-4 px-0 fw-bold border-0 bg-transparent" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#q1">
+                    01. How do I capture the best image for identification?
+                </button>
+                <div id="q1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="pb-4 text-muted small" style="max-width: 800px;">
+                        For optimal results, take a direct birds-eye view photo of the track in soft soil. Include a
+                        common object for scale and avoid harsh lighting that creates deep shadows.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Accuracy -->
+            <div class="faq-item border-bottom py-3" data-category="accuracy">
+                <button class="accordion-button collapsed py-4 px-0 fw-bold border-0 bg-transparent" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#q2">
+                    02. How accurate is the WildlifeID engine?
+                </button>
+                <div id="q2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="pb-4 text-muted small" style="max-width: 800px;">
+                        The EfficientNetV2 engine operates at 99.8% precision on our validation set. Real-world
+                        conditions typically yield >95% accuracy when following capture best practices.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Species -->
+            <div class="faq-item border-bottom py-3" data-category="species">
+                <button class="accordion-button collapsed py-4 px-0 fw-bold border-0 bg-transparent" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#q3">
+                    03. Which species are currently supported?
+                </button>
+                <div id="q3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="pb-4 text-muted small" style="max-width: 800px;">
+                        We support 18 primary species including large carnivores and common North American fauna. We are
+                        expanding this monthly through research partnerships.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Privacy -->
+            <div class="faq-item border-bottom py-3" data-category="privacy">
+                <button class="accordion-button collapsed py-4 px-0 fw-bold border-0 bg-transparent" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#q4">
+                    04. What happens to my data?
+                </button>
+                <div id="q4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                    <div class="pb-4 text-muted small" style="max-width: 800px;">
+                        All processing is handled securely. We do not store raw images on our servers unless you
+                        explicitly chose to log them for research purposes.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="noResults" class="text-center py-5 d-none">
+            <p class="text-muted">No matching technical results found.</p>
+        </div>
+    </div>
+</div>
+
+<div class="row py-5 border-top align-items-center">
+    <div class="col-lg-8">
+        <h3 class="fw-bold mb-2">Still have questions?</h3>
+        <p class="text-muted mb-0">Our technical team is available for platform support.</p>
+    </div>
+    <div class="col-lg-4 text-lg-end mt-4 mt-lg-0">
+        <a href="/contact" class="btn btn-outline-secondary px-5 py-3">Submit Inquiry</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function handleSearch() {
+        const query = document.getElementById('faqSearch').value.toLowerCase();
+        const items = document.querySelectorAll('.faq-item');
+        let visibleCount = 0;
+
+        items.forEach(item => {
+            const text = item.innerText.toLowerCase();
+            if (text.includes(query)) {
+                item.classList.remove('d-none');
+                visibleCount++;
+            } else {
+                item.classList.add('d-none');
+            }
+        });
+
+        document.getElementById('noResults').classList.toggle('d-none', visibleCount > 0);
+    }
+</script>
+<style>
+    .accordion-button:not(.collapsed) {
+        background-color: transparent !important;
+        color: var(--accent) !important;
+        box-shadow: none !important;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none !important;
+    }
+
+    .accordion-button::after {
+        background-size: 1rem;
+    }
+</style>
+{% endblock %}

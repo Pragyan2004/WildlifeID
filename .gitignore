@@ -1,0 +1,100 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+#  Usually these files are covered by other .gitignore patterns for Python already,
+#  but we add them here as an extra precaution.
+.build/
+selfpyinstaller/
+dist/
+bin/
+bootloader/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# Pip/Conda environments
+pip-log.txt
+pip-delete-this-directory.txt
+.tox/
+.python-version
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb_checkpoints
+
+# Logs
+logs/
+*.log
+
+# Data directories (large files, user uploads, temp data)
+data/
+prediction_history/
+uploads/
+OpenAnimalTracks/
+saved_models/
+static/uploads/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Runtime data
+*.json
+# Note: add specific JSONs if needed, but generally ignore user data
+
+# Deployment
+Procfile  # Keep if needed, but ignore generated
+runtime.txt
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Model Weights
+*.h5
+*.keras
+*.pt
+*.pth

@@ -59,6 +59,13 @@ python app.py
 gunicorn app:app
 ```
 
+## Dataset
+
+```
+https://www.kaggle.com/datasets/antoreepjana/animals-detection-images-dataset
+```
+
+
 ## 📂 Project Structure
 
 *   `/static`: Hardware-accelerated CSS, JS, and clinical image assets.
